@@ -24,7 +24,10 @@ class ViewController: UITableViewController {
     // MARK: - API
     
     fileprivate func fetchPetitions() {
-        Networking.fetchPetitions { [weak self](result) in
+        
+        guard let tag = navigationController?.tabBarItem.tag else { return }
+        
+        Networking.fetchPetitions(tag) { [weak self](result) in
             switch result {
             case .success(let petitions):
                 self?.petitions = petitions.results
@@ -51,6 +54,14 @@ extension ViewController {
         cell.textLabel?.text = petition.title
         cell.detailTextLabel?.text = petition.body
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let petition = petitions[indexPath.row]
+        
+        let dc = DetailController()
+        dc.detailItem = petition
+        navigationController?.pushViewController(dc, animated: true)
     }
 }
 

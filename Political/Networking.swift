@@ -9,8 +9,13 @@
 import Foundation
 
 class Networking {
-    static func fetchPetitions(completion: @escaping (Result<Petitions, Error>) -> ()) {
-        let urlString = "https://api.whitehouse.gov/v1/petitions.json?limit=100"
+    static func fetchPetitions(_ tag: Int, completion: @escaping (Result<Petitions, Error>) -> ()) {
+        var urlString = ""
+        if tag == 0 {
+            urlString = "https://api.whitehouse.gov/v1/petitions.json?limit=100"
+        } else {
+            urlString = "https://api.whitehouse.gov/v1/petitions.json?signatureCountFloor=10000&limit=100"
+        }
         guard let url = URL(string: urlString) else { return }
         
         URLSession.shared.dataTask(with: url) { (data, reponse, error) in
